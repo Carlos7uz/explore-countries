@@ -1,0 +1,31 @@
+<div class="not-found-container">
+  <mat-card class="not-found-card">
+    <mat-card-header>
+      <div mat-card-avatar class="icon-header">
+        <mat-icon>wrong_location</mat-icon>
+      </div>
+      <mat-card-title class="mat-headline-2">404</mat-card-title>
+      <mat-card-subtitle class="mat-headline-5">Terra Incognita</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="compass-visual">
+        <mat-icon class="spinning-compass">explore</mat-icon>
+      </div>
+      
+      <p class="mat-body-1 message">
+        {{ lostMessage }}
+      </p>
+      <p class="mat-body-2 explanation">
+        O país, território ou rota que você tentou acessar não existe em nossa base de dados geográfica.
+      </p>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <a mat-raised-button color="primary" routerLink="/">
+        <mat-icon>map</mat-icon>
+        Voltar para civilização
+      </a>
+    </mat-card-actions>
+  </mat-card>
+</div>
