@@ -1,0 +1,89 @@
+<div class="country-details-container" *ngIf="country() as countryData">
+  <button class="btn-back" (click)="goBack()">
+    <span class="icon">⬅️</span> Voltar
+  </button>
+
+  <div class="header-info">
+    <h1 class="country-title">{{ countryData.name.common }}</h1>
+    <h2 class="country-subtitle">{{ countryData.name.official }}</h2>
+  </div>
+
+  <div class="content-grid">
+    <div class="flag-wrapper">
+      <img [src]="countryData.flags.svg" [alt]="'Bandeira de ' + countryData.name.common" class="flag-img" />
+    </div>
+
+    <div class="info-wrapper">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <span class="icon">👥</span>
+          <div class="stat-text">
+            <span class="label">População</span>
+            <span class="value">{{ countryData.population | number }}</span>
+          </div>
+        </div>
+        
+        <div class="stat-item">
+          <span class="icon">🌍</span>
+          <div class="stat-text">
+            <span class="label">Região</span>
+            <span class="value">{{ countryData.region }}</span>
+          </div>
+        </div>
+
+        <div class="stat-item">
+          <span class="icon">📍</span>
+          <div class="stat-text">
+            <span class="label">Sub-região</span>
+            <span class="value">{{ countryData.subregion }}</span>
+          </div>
+        </div>
+
+        <div class="stat-item">
+          <span class="icon">🏛️</span>
+          <div class="stat-text">
+            <span class="label">Capital</span>
+            <span class="value">{{ countryData.capital?.[0] || 'N/A' }}</span>
+          </div>
+        </div>
+
+        <div class="stat-item">
+          <span class="icon">📏</span>
+          <div class="stat-text">
+            <span class="label">Área</span>
+            <span class="value">{{ countryData.area | number }} km²</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tags-container">
+        <div class="tags-group">
+          <h3>Moedas</h3>
+          <div class="badges">
+            <span class="badge currency" *ngFor="let currency of getCurrencies(countryData.currencies)">
+              💵 {{ currency }}
+            </span>
+          </div>
+        </div>
+
+        <div class="tags-group">
+          <h3>Idiomas</h3>
+          <div class="badges">
+            <span class="badge language" *ngFor="let lang of getLanguages(countryData.languages)">
+              🗣️ {{ lang }}
+            </span>
+          </div>
+        </div>
+
+        <div class="tags-group border-group" *ngIf="countryData.borders?.length">
+          <h3>Fronteiras</h3>
+          <div class="badges">
+            <span class="badge border" *ngFor="let border of countryData.borders">
+              {{ border }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

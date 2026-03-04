@@ -8,12 +8,11 @@ export const routes: Routes = [
         component: HomeComponent,
         title: 'Explorador de Países | Home'  
     },
-    // {
-    //     path: 'country/:id',
-    //     loadComponent: () => import('./features/country-detail/country-detail.component').then(m => m.CountryDetailComponent),
-    //     title: 'Detalhes do País'
-    // },
-
+    {
+        path: 'country/:id',
+        loadComponent: () => import('./features/country-detail/country-detail.component').then(m => m.CountryDetailComponent),
+        title: 'Detalhes do País'
+    },
     {
         path: '**',
         component: NotFoundComponent,

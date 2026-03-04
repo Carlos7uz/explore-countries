@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { environment } from "../../../environments/environment.development";
-import { Observable } from "rxjs";
+import { map, Observable } from "rxjs";
 import { Country } from "../models/country.interface";
 
 @Injectable({
@@ -19,5 +19,16 @@ export class CountriesService{
 
     getCountryByCode(code: string): Observable<Country[]> {
         return this.http.get<Country[]>(`${this.API_URL}/alpha/${code}`);
+    }
+
+    getBordersByCodes(codes: string[]): Observable<{ name: string, code: string }[]> {
+    const codesString = codes.join(',');
+    return this.http.get<any[]>(`${this.API_URL}/alpha?codes=${codesString}&fields=name,cca3`)
+        .pipe(
+        map(countries => countries.map(c => ({
+            name: c.name.common,
+            code: c.cca3
+        })))
+        );
     }
 }

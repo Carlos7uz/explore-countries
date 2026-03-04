@@ -1,4 +1,29 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat; 
+
+:root {
+    --color-primary: #3f51b5;       
+    --color-primary-dark: #303f9f;
+    --color-accent: #ff4081;        
+    --color-warn: #f44336;          
+
+    --color-bg-default: #f5f7fa;    
+    --color-bg-surface: #ffffff;  
+
+    --color-text-primary: #2d3748;   
+    --color-text-secondary: #718096;
+    --color-text-disabled: #a0aec0;
+
+    --color-border: #e2e8f0;
+
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.15);
+}
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { 
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    background-color: var(--color-bg-default);
+    color: var(--color-text-primary); 
+}

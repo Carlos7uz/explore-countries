@@ -4,14 +4,14 @@
   align-items: center;
   min-height: 80vh; 
   padding: 20px;
-  background-color: #fafafa; 
+  background-color: transparent; 
 }
 
 .not-found-card {
   max-width: 500px;
   width: 100%;
   border-radius: 12px;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow-md); 
 
   .icon-header {
     display: flex;
@@ -21,13 +21,13 @@
       font-size: 40px;
       height: 40px;
       width: 40px;
-      color: #3f51b5; 
+      color: var(--color-primary);
     }
   }
 
   mat-card-title {
     font-weight: bold;
-    color: #3f51b5; 
+    color: var(--color-primary); 
   }
 
   mat-card-content {
@@ -41,7 +41,7 @@
         font-size: 100px;
         height: 100px;
         width: 100px;
-        color: #3f51b5; 
+        color: var(--color-primary);
         opacity: 0.7;
         
         animation: brokenCompass 3s ease-in-out infinite;
@@ -52,16 +52,15 @@
     .message {
       font-weight: 500;
       margin-bottom: 10px;
-      color: #333;
+      color: var(--color-text-primary); 
     }
 
     .explanation {
-      color: #757575;
+      color: var(--color-text-secondary); 
       margin-bottom: 20px;
     }
   }
 }
-
 
 @keyframes brokenCompass {
   0% { transform: rotate(0deg); }

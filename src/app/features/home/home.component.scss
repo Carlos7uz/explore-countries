@@ -19,7 +19,7 @@
   align-items: center;
   justify-content: center;
   padding: 48px 0;
-  color: #666;
+  color: var(--color-text-secondary); 
 
   mat-icon {
     font-size: 48px;
@@ -41,16 +41,17 @@
   display: flex;
   flex-direction: column;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background-color: var(--color-bg-surface); 
 
   &:hover {
     transform: translateY(-4px); 
-    box-shadow: 0 8px 16px rgba(0,0,0,0.15) !important;
+    box-shadow: var(--shadow-hover) !important; 
   }
 
   .flag-image {
     height: 160px;
     object-fit: cover; 
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--color-border); 
   }
 
   mat-card-content {
@@ -62,11 +63,11 @@
     font-size: 1.25rem;
     font-weight: 700;
     margin-bottom: 16px;
-    color: #333;
+    color: var(--color-text-primary); 
   }
 
   .country-info {
     margin: 4px 0;
-    color: #555;
+    color: var(--color-text-secondary);
   }
 }
