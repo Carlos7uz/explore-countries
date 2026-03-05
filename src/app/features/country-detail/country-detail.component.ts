@@ -1,20 +1,23 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { CountriesService } from '../../core/services/countries.service';
-import { Country } from '../../core/models/country.interface';
+import { BorderCountry } from '../../core/models/country-borders.interface';
 import { Currency } from '../../core/models/country-currency.interface';
+import { Country } from '../../core/models/country.interface';
+import { CountriesService } from '../../core/services/countries.service';
 
 @Component({
   selector: 'app-country-detail',
   imports: [
-    CommonModule, 
+    CommonModule,
     RouterModule,
     MatButtonModule,
+    MatCardModule,
     MatIconModule,
     MatProgressSpinnerModule,
     MatChipsModule
@@ -27,32 +30,50 @@ export class CountryDetailComponent implements OnInit {
   private location = inject(Location);
   private countriesService = inject(CountriesService);
 
-  country = signal<Country | null >(null);
-  isLoading = signal<boolean>(true);
-  errorMessage = signal<string | null>(null);
+  country: WritableSignal<Country | null> = signal(null);
+  borderCountries: WritableSignal<BorderCountry[]> = signal([]);
+
+  isLoading: WritableSignal<boolean> = signal(true);
+  errorMessage: WritableSignal<string> = signal('');
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
-      const id = params.get('id');
-      if(id) {
-        this.loadCountry(id);
+      const countryCode = params.get('id');
+
+      if (countryCode) {
+        this.loadCountryData(countryCode);
       }
     });
   }
 
-  loadCountry(code: string): void {
+  loadCountryData(code: string): void {
     this.isLoading.set(true);
-    this.errorMessage.set(null);
+    this.errorMessage.set('');
 
     this.countriesService.getCountryByCode(code).subscribe({
-      next: (data) => {
-        this.country.set(data[0]); 
-        this.isLoading.set(false);
+      next: (response) => {
+        const countryData = response[0];
+        this.country.set(countryData);
+
+        if (countryData.borders && countryData.borders.length > 0) {
+          this.countriesService.getBordersByCodes(countryData.borders).subscribe({
+            next: (borders) => {
+              this.borderCountries.set(borders);
+              this.isLoading.set(false);
+            },
+            error: () => {
+              this.borderCountries.set([]);
+              this.isLoading.set(false);
+            }
+          });
+        } else {
+          this.borderCountries.set([]);
+          this.isLoading.set(false);
+        }
       },
       error: (err) => {
-        // ESSA LINHA É A CHAVE!
         console.error('ERRO DETALHADO DA API:', err);
-        
+
         this.errorMessage.set('Não foi possível carregar os detalhes deste país.');
         this.isLoading.set(false);
       }

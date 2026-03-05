@@ -5,55 +5,72 @@
     <input matInput [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" placeholder="Ex: Brasil, Japan...">
   </mat-form-field>
 
-  <mat-form-field appearance="outline" class="region-field">
-    <mat-label>Filtrar por Região</mat-label>
-    <mat-select [ngModel]="selectedRegion()" (ngModelChange)="selectedRegion.set($event)">
-      <mat-option value="">Todas as Regiões</mat-option>
-      <mat-option value="Africa">África</mat-option>
-      <mat-option value="Americas">Américas</mat-option>
-      <mat-option value="Asia">Ásia</mat-option>
-      <mat-option value="Europe">Europa</mat-option>
-      <mat-option value="Oceania">Oceania</mat-option>
-    </mat-select>
-  </mat-form-field>
+  <div class="dropdowns-group">
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Região</mat-label>
+      <mat-select [ngModel]="selectedRegion()" (ngModelChange)="selectedRegion.set($event)">
+        <mat-option value="">Todas</mat-option>
+        <mat-option value="Africa">África</mat-option>
+        <mat-option value="Americas">Américas</mat-option>
+        <mat-option value="Asia">Ásia</mat-option>
+        <mat-option value="Europe">Europa</mat-option>
+        <mat-option value="Oceania">Oceania</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Ordenar por</mat-label>
+      <mat-select [ngModel]="sortOption()" (ngModelChange)="sortOption.set($event)">
+        <mat-option value="name">Nome (A-Z)</mat-option>
+        <mat-option value="population">Maior População</mat-option>
+        <mat-option value="area">Maior Área</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
 </section>
 
 <section class="content-section">
   @if (isLoading()) {
-    <div class="loading-container">
+    <div class="feedback-container">
       <mat-spinner diameter="50"></mat-spinner>
       <p>Mapeando o mundo...</p>
     </div>
-  } 
+  }
   @else if (errorMessage()) {
-    <div class="error-container">
+    <div class="feedback-container error-state">
       <mat-icon color="warn">error_outline</mat-icon>
+      <h2>Ops! Algo falhou.</h2>
       <p>{{ errorMessage() }}</p>
     </div>
-  } 
+  }
   @else {
     <div class="countries-grid">
       @for (country of filteredCountries(); track country.cca3) {
-        <mat-card class="country-card mat-elevation-z3">
-          <img mat-card-image [src]="country.flags.svg" [alt]="country.flags.alt || 'Bandeira de ' + country.name.common" class="flag-image">
-          
-          <mat-card-content>
-            <h2 class="country-name">{{ country.name.common }}</h2>
-            <p class="country-info"><strong>População:</strong> {{ country.population | number }}</p>
-            <p class="country-info"><strong>Região:</strong> {{ country.region }}</p>
-            <p class="country-info"><strong>Capital:</strong> {{ country.capital?.[0] || 'N/A' }}</p>
-          </mat-card-content>
 
-          <mat-card-actions>
-            <button mat-button color="primary" [routerLink]="['/country', country.cca3]">
-              VER DETALHES
-            </button>
-          </mat-card-actions>
+        <mat-card class="country-card" appearance="outlined" [routerLink]="['/country', country.cca3]">
+          <div class="card-img-wrapper">
+            <img [src]="country.flags.svg" [alt]="'Bandeira de ' + country.name.common" class="flag-image">
+          </div>
+
+          <mat-card-content class="card-content">
+            <h2 class="country-name">{{ country.name.common }}</h2>
+            <div class="info-row">
+              <strong>População:</strong> <span>{{ country.population | number }}</span>
+            </div>
+            <div class="info-row">
+              <strong>Região:</strong> <span>{{ country.region }}</span>
+            </div>
+            <div class="info-row">
+              <strong>Capital:</strong> <span>{{ country.capital?.[0] || 'N/A' }}</span>
+            </div>
+          </mat-card-content>
         </mat-card>
+
       } @empty {
-        <div class="empty-state">
-          <mat-icon>travel_explore</mat-icon>
-          <p>Nenhum país encontrado com estes filtros.</p>
+        <div class="feedback-container empty-state">
+          <mat-icon color="primary">travel_explore</mat-icon>
+          <h2>Nenhum país encontrado</h2>
+          <p>Tente ajustar os filtros de busca.</p>
         </div>
       }
     </div>

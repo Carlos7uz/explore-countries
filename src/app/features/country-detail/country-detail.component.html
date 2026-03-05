@@ -1,89 +1,131 @@
-<div class="country-details-container" *ngIf="country() as countryData">
-  <button class="btn-back" (click)="goBack()">
-    <span class="icon">⬅️</span> Voltar
-  </button>
+<div class="country-details-container">
 
-  <div class="header-info">
-    <h1 class="country-title">{{ countryData.name.common }}</h1>
-    <h2 class="country-subtitle">{{ countryData.name.official }}</h2>
-  </div>
-
-  <div class="content-grid">
-    <div class="flag-wrapper">
-      <img [src]="countryData.flags.svg" [alt]="'Bandeira de ' + countryData.name.common" class="flag-img" />
+  @if (isLoading()) {
+    <div class="state-container loading-state">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Carregando informações do país...</p>
     </div>
+  }
 
-    <div class="info-wrapper">
-      <div class="stats-grid">
-        <div class="stat-item">
-          <span class="icon">👥</span>
-          <div class="stat-text">
-            <span class="label">População</span>
-            <span class="value">{{ countryData.population | number }}</span>
-          </div>
-        </div>
-        
-        <div class="stat-item">
-          <span class="icon">🌍</span>
-          <div class="stat-text">
-            <span class="label">Região</span>
-            <span class="value">{{ countryData.region }}</span>
-          </div>
-        </div>
-
-        <div class="stat-item">
-          <span class="icon">📍</span>
-          <div class="stat-text">
-            <span class="label">Sub-região</span>
-            <span class="value">{{ countryData.subregion }}</span>
-          </div>
-        </div>
-
-        <div class="stat-item">
-          <span class="icon">🏛️</span>
-          <div class="stat-text">
-            <span class="label">Capital</span>
-            <span class="value">{{ countryData.capital?.[0] || 'N/A' }}</span>
-          </div>
-        </div>
-
-        <div class="stat-item">
-          <span class="icon">📏</span>
-          <div class="stat-text">
-            <span class="label">Área</span>
-            <span class="value">{{ countryData.area | number }} km²</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="tags-container">
-        <div class="tags-group">
-          <h3>Moedas</h3>
-          <div class="badges">
-            <span class="badge currency" *ngFor="let currency of getCurrencies(countryData.currencies)">
-              💵 {{ currency }}
-            </span>
-          </div>
-        </div>
-
-        <div class="tags-group">
-          <h3>Idiomas</h3>
-          <div class="badges">
-            <span class="badge language" *ngFor="let lang of getLanguages(countryData.languages)">
-              🗣️ {{ lang }}
-            </span>
-          </div>
-        </div>
-
-        <div class="tags-group border-group" *ngIf="countryData.borders?.length">
-          <h3>Fronteiras</h3>
-          <div class="badges">
-            <span class="badge border" *ngFor="let border of countryData.borders">
-              {{ border }}
-            </span>
-          </div>
-        </div>
-      </div>
+  @else if (errorMessage()) {
+    <div class="state-container error-state">
+      <mat-icon color="warn" class="error-icon">error_outline</mat-icon>
+      <h2>Ops! Algo deu errado.</h2>
+      <p>{{ errorMessage() }}</p>
+      <button mat-flat-button color="primary" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+        Voltar para a lista
+      </button>
     </div>
-  </div>
+  }
+
+  @else {
+    @if (country(); as countryData) {
+      <button mat-stroked-button color="primary" class="btn-back" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+        Voltar
+      </button>
+
+      <mat-card class="detail-card" appearance="outlined">
+
+        <mat-card-header class="header-info">
+          <mat-card-title class="country-title">{{ countryData.name.common }}</mat-card-title>
+          <mat-card-subtitle class="country-subtitle">{{ countryData.name.official }}</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content class="content-grid">
+          <div class="flag-wrapper">
+            <img [src]="countryData.flags.svg" [alt]="'Bandeira de ' + countryData.name.common" class="flag-img" />
+          </div>
+
+          <div class="info-wrapper">
+
+            <div class="stats-grid">
+              <div class="stat-item">
+                <mat-icon color="primary">group</mat-icon>
+                <div class="stat-text">
+                  <span class="label">População</span>
+                  <span class="value">{{ countryData.population | number }}</span>
+                </div>
+              </div>
+
+              <div class="stat-item">
+                <mat-icon color="primary">public</mat-icon>
+                <div class="stat-text">
+                  <span class="label">Região</span>
+                  <span class="value">{{ countryData.region }}</span>
+                </div>
+              </div>
+
+              <div class="stat-item">
+                <mat-icon color="primary">place</mat-icon>
+                <div class="stat-text">
+                  <span class="label">Sub-região</span>
+                  <span class="value">{{ countryData.subregion }}</span>
+                </div>
+              </div>
+
+              <div class="stat-item">
+                <mat-icon color="primary">account_balance</mat-icon>
+                <div class="stat-text">
+                  <span class="label">Capital</span>
+                  <span class="value">{{ countryData.capital?.[0] || 'N/A' }}</span>
+                </div>
+              </div>
+
+              <div class="stat-item">
+                <mat-icon color="primary">square_foot</mat-icon>
+                <div class="stat-text">
+                  <span class="label">Área</span>
+                  <span class="value">{{ countryData.area | number }} km²</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="tags-container">
+              <div class="tags-group">
+                <h3>Moedas</h3>
+                <mat-chip-set>
+                  @for (currency of getCurrencies(countryData.currencies); track currency) {
+                    <mat-chip>
+                      <mat-icon matChipAvatar>payments</mat-icon>
+                      {{ currency }}
+                    </mat-chip>
+                  } @empty {
+                    <mat-chip>Sem moeda</mat-chip>
+                  }
+                </mat-chip-set>
+              </div>
+
+              <div class="tags-group">
+                <h3>Idiomas</h3>
+                <mat-chip-set>
+                  @for (lang of getLanguages(countryData.languages); track lang) {
+                    <mat-chip>
+                      <mat-icon matChipAvatar>language</mat-icon>
+                      {{ lang }}
+                    </mat-chip>
+                  }
+                </mat-chip-set>
+              </div>
+
+              @if (borderCountries().length > 0) {
+                <div class="tags-group border-group">
+                  <h3>Fronteiras</h3>
+                  <mat-chip-set>
+                    @for (border of borderCountries(); track border.code) {
+                      <a mat-chip [routerLink]="['/country', border.code]" class="interactive-chip">
+                        {{ border.name }}
+                      </a>
+                    }
+                  </mat-chip-set>
+                </div>
+              }
+            </div>
+
+          </div>
+        </mat-card-content>
+      </mat-card>
+    }
+  }
 </div>

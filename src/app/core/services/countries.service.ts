@@ -1,7 +1,8 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
+import { map, Observable, of } from "rxjs";
 import { environment } from "../../../environments/environment.development";
-import { map, Observable } from "rxjs";
+import { BorderApiResponse, BorderCountry } from "../models/country-borders.interface";
 import { Country } from "../models/country.interface";
 
 @Injectable({
@@ -21,14 +22,20 @@ export class CountriesService{
         return this.http.get<Country[]>(`${this.API_URL}/alpha/${code}`);
     }
 
-    getBordersByCodes(codes: string[]): Observable<{ name: string, code: string }[]> {
-    const codesString = codes.join(',');
-    return this.http.get<any[]>(`${this.API_URL}/alpha?codes=${codesString}&fields=name,cca3`)
-        .pipe(
-        map(countries => countries.map(c => ({
-            name: c.name.common,
-            code: c.cca3
-        })))
-        );
+    getBordersByCodes(codes: string[]): Observable<BorderCountry[]> {
+
+        if (!codes || codes.length === 0) {
+            return of([]);
+        }
+
+        const codesString = codes.join(',');
+
+        return this.http.get<BorderApiResponse[]>(`${this.API_URL}/alpha?codes=${codesString}&fields=name,cca3`)
+            .pipe(
+                map(countries => countries.map(c => ({
+                    name: c.name.common,
+                    code: c.cca3
+                })))
+            );
     }
 }

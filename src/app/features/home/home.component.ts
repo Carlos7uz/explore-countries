@@ -1,28 +1,28 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CountriesService } from '../../core/services/countries.service';
-import { Country } from '../../core/models/country.interface';
-import { RouterModule } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
+import { RouterModule } from '@angular/router';
+import { Country } from '../../core/models/country.interface';
+import { CountriesService } from '../../core/services/countries.service';
 
 @Component({
   selector: 'app-home',
   imports: [
-    CommonModule, 
-    FormsModule, 
+    CommonModule,
+    FormsModule,
     RouterModule,
-    MatCardModule, 
-    MatFormFieldModule, 
-    MatInputModule, 
-    MatSelectModule, 
-    MatButtonModule, 
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule
   ],
@@ -38,18 +38,31 @@ export class HomeComponent implements OnInit {
 
   searchQuery = signal<string>('');
   selectedRegion = signal<string>('');
+  sortOption = signal<string>('name');
 
   filteredCountries = computed(() => {
     const all = this.countries();
     const query = this.searchQuery().toLowerCase().trim();
     const region = this.selectedRegion();
+    const sort = this.sortOption();
 
-    return all.filter(country => {
+    let filtered = all.filter(country => {
       const matchesSearch = country.name.common.toLowerCase().includes(query);
       const matchesRegion = region ? country.region === region : true;
-      
       return matchesSearch && matchesRegion;
     });
+
+    filtered.sort((a, b) => {
+      if (sort === 'population') {
+        return b.population - a.population;
+      } else if (sort === 'area') {
+        return (b.area || 0) - (a.area || 0);
+      } else {
+        return a.name.common.localeCompare(b.name.common);
+      }
+    });
+
+    return filtered;
   });
 
   ngOnInit(): void {
@@ -72,5 +85,5 @@ export class HomeComponent implements OnInit {
       }
     });
   }
-} 
+}
 
